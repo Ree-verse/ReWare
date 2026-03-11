@@ -16,6 +16,7 @@ A lightweight remote desktop tool built with Python. Control any PC on your loca
 
 Here is an example at 10 FPS, with a JPEG quality of 40%:
 
+https://github.com/user-attachments/assets/d8fa3e88-f8b8-493a-bfee-434bb0f76327
 
 ## Features
 
