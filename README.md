@@ -55,7 +55,8 @@ Install dependencies on **both** machines:
 pip install colorama keyboard mouse mss pillow websockets 
 ```
 
-> [!NOTE] On Linux, `keyboard` and `mouse` require root privileges on the client machine.
+> [!NOTE]
+> On Linux, `keyboard` and `mouse` require root privileges on the client machine.
 
 ## Usage
 
