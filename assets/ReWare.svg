@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <!-- Background circle -->
+  <circle cx="128" cy="128" r="120" fill="#1e1e2e"/>
+
+  <!-- Monitor body -->
+  <rect x="48" y="58" width="160" height="110" rx="10" ry="10" fill="#313244" stroke="#45475a" stroke-width="3"/>
+
+  <!-- Screen -->
+  <rect x="58" y="68" width="140" height="88" rx="4" ry="4" fill="#181825"/>
+
+  <!-- Monitor stand -->
+  <rect x="108" y="168" width="40" height="16" rx="2" ry="2" fill="#313244"/>
+  <rect x="88" y="184" width="80" height="8" rx="4" ry="4" fill="#313244"/>
+
+  <!-- Cursor arrow -->
+  <g transform="translate(118, 92)">
+    <polygon points="0,0 0,40 11,31 20,50 28,46 19,27 32,27" fill="#a6e3a1" stroke="#1e1e2e" stroke-width="2" stroke-linejoin="round"/>
+  </g>
+</svg>

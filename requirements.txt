@@ -1,0 +1,6 @@
+colorama
+keyboard
+mouse
+mss
+pillow
+websockets
