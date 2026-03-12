@@ -303,7 +303,7 @@ class App:
         for widget in self._client_frame.winfo_children():
             widget.destroy()
 
-        clients = self.server.clients
+        clients = self.server.get_clients()
         if not clients:
             tk.Label(
                 self._client_frame,

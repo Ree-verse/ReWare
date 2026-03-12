@@ -37,6 +37,7 @@ class Server:
     def __init__(self, host: str = "0.0.0.0", port: int = 8765) -> None:
         self.host = host
         self.port = port
+        self.clients_lock = threading.Lock()
         self.clients: dict[str, Client] = {}
         self.active_id: Optional[str] = None
         self._loop: Optional[asyncio.AbstractEventLoop] = None
@@ -75,12 +76,13 @@ class Server:
                 return
 
             client_id = uuid.uuid4().hex[:8]
-            self.clients[client_id] = Client(
-                id=client_id,
-                name=msg["name"],
-                monitors=msg.get("monitors", []),
-                websocket=ws,
-            )
+            with self.clients_lock:
+                self.clients[client_id] = Client(
+                    id=client_id,
+                    name=msg["name"],
+                    monitors=msg.get("monitors", []),
+                    websocket=ws,
+                )
             await ws.send(json.dumps({"type": "registered"}))
             self._fire(self.on_clients_changed)
 
@@ -97,39 +99,51 @@ class Server:
 
         finally:
             if client_id:
-                client = self.clients.pop(client_id, None)
-                if client:
+                with self.clients_lock:
+                    client = self.clients.pop(client_id, None)
                     was_active = self.active_id == client_id
                     if was_active:
                         self.active_id = None
+
+                if client:
+                    if was_active:
                         self._fire(self.on_stream_lost, client.name)
                     self._fire(self.on_clients_changed)
 
     # Public API (called from the GUI thread)
 
+    def get_clients(self) -> dict[str, Client]:
+        """Return a thread-safe snapshot of connected clients."""
+        with self.clients_lock:
+            return dict(self.clients)
+
     def select(self, client_id: str, monitor: int) -> None:
         """Start streaming from a specific client and monitor."""
-        if self.active_id and self.active_id in self.clients:
-            self._send(self.active_id, {"type": "stop_stream"})
-            self.clients[self.active_id].streaming = False
+        with self.clients_lock:
+            if self.active_id and self.active_id in self.clients:
+                self._send(self.active_id, {"type": "stop_stream"})
+                self.clients[self.active_id].streaming = False
 
-        if client_id not in self.clients:
-            return
-        self.active_id = client_id
-        self.clients[client_id].streaming = True
-        self._send(client_id, {"type": "start_stream", "monitor": monitor})
+            if client_id not in self.clients:
+                return
+
+            self.active_id = client_id
+            self.clients[client_id].streaming = True
+            self._send(client_id, {"type": "start_stream", "monitor": monitor})
 
     def disconnect(self) -> None:
         """Stop the active stream."""
-        if self.active_id and self.active_id in self.clients:
-            self._send(self.active_id, {"type": "stop_stream"})
-            self.clients[self.active_id].streaming = False
-        self.active_id = None
+        with self.clients_lock:
+            if self.active_id and self.active_id in self.clients:
+                self._send(self.active_id, {"type": "stop_stream"})
+                self.clients[self.active_id].streaming = False
+            self.active_id = None
 
     def send_input(self, data: dict) -> None:
         """Forward an input event to the active client."""
-        if self.active_id:
-            self._send(self.active_id, {"type": "input", **data})
+        with self.clients_lock:
+            if self.active_id:
+                self._send(self.active_id, {"type": "input", **data})
 
     # Helpers
 

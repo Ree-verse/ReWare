@@ -22,6 +22,7 @@ from typing import Any
 
 import keyboard
 import mouse
+from mss.screenshot import ScreenShot
 import websockets
 from colorama import Fore, Style
 from mss import mss
@@ -142,22 +143,31 @@ class Client:
     async def _stream(self) -> None:
         """Continuously capture the screen and send frames as JPEG."""
         interval = 1.0 / FPS
+        loop = asyncio.get_running_loop()
+
         with mss() as sct:
             while True:
                 if self.streaming:
                     try:
                         monitor = sct.monitors[self.monitor]
                         sct_frame = sct.grab(monitor)
-                        # frame = Image.frombytes(
-                        #     mode="RGB", size=sct_frame.size, data=sct_frame.rgb
-                        # )
-                        frame = Image.frombytes(
-                            "RGB", sct_frame.size, sct_frame.bgra, "raw", "BGRX"
+                        jpeg = await loop.run_in_executor(
+                            None, self._process_frame, sct_frame
                         )
-                        await self._ws.send(self._encode_frame_to_jpeg(frame))
+                        await self._ws.send(jpeg)
                     except (IndexError, KeyError):
                         self.streaming = False
                 await asyncio.sleep(interval)
+
+    def _process_frame(self, sct_frame: ScreenShot) -> bytes:
+        """Convert a screen capture to JPEG bytes."""
+        # frame = Image.frombytes(
+        #     mode="RGB", size=sct_frame.size, data=sct_frame.rgb
+        # )
+        frame = Image.frombytes(
+            "RGB", sct_frame.size, sct_frame.bgra, "raw", "BGRX"
+        )
+        return self._encode_frame_to_jpeg(frame)
 
     def _refresh_dimensions(self) -> None:
         # Get monitor dimensions for converting ratios to pixel coordinates after
