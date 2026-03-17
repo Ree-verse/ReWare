@@ -109,6 +109,15 @@ These constants in `client.py` can be tuned:
 - [ ] Scroll horizontally (which the Python module `mouse` does not allow)
 - [ ] Integrate compatibility for all keyboard types (not just QWERTY)
 
+## Support
+
+If you have questions, suggestions, or want to hang out with other developers, join my Discord server: [Ree-verse GitHub Support](https://discord.gg/ZZfqH9Z4uQ).
+
+## Credits
+
+This project was inspired by [Quasar](https://github.com/quasar/Quasar).
+Many thanks to Quasar for the inspiration.
+
 ## License
 
 Released under the [MIT License](https://github.com/ree-verse/ReWare/blob/main/LICENSE) © 2026 [Ree-verse](https://github.com/ree-verse).
