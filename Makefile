@@ -40,5 +40,5 @@ build-client:
 # Clean up build artifacts
 clean:
 	@echo "Cleaning up..."
-	rm -rf $(DIST_DIR) $(BUILD_DIR) *.spec  # Adjust commands for Windows
+	rm -rf $(DIST_DIR) $(BUILD_DIR) *.spec
 	rm -rf __pycache__
