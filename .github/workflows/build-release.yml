@@ -1,0 +1,103 @@
+name: Build/publish release
+
+on: [push, pull_request]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Binary ${{ matrix.platform }} (on ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    outputs:
+      version: ${{ steps.extract_version.outputs.version }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: x86_64-unknown-linux-gnu
+          - os: windows-latest
+            platform: x86_64-pc-windows-msvc
+          - os: macos-latest
+            platform: aarch64-apple-darwin
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install make (Windows)
+        run: choco install make
+        if: startsWith(matrix.os, 'windows')
+        shell: pwsh
+
+      - name: Install Linux UI dependencies
+        if: startsWith(matrix.os, 'ubuntu')
+        run: sudo apt install python3-tk
+
+      - name: Install Python dependencies
+        run: make install
+
+      - name: Build Application
+        run: make build
+
+      - name: Set exe extension for Windows
+        run: echo "EXE=.exe" >> $env:GITHUB_ENV
+        if: startsWith(matrix.os, 'windows')
+
+      - name: Upload Server/GUI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}-server
+          path: dist/ReWare GUI${{ env.EXE }}
+
+      - name: Upload Client artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}-client
+          path: dist/ReWare Client${{ env.EXE }}
+
+      - name: Get version from tag
+        id: extract_version
+        run: |
+          echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+        shell: bash
+
+      - name: Install CHANGELOG parser
+        uses: taiki-e/install-action@parse-changelog
+
+      - name: Get CHANGELOG entry
+        run: parse-changelog CHANGELOG.md ${{ steps.extract_version.outputs.version }} | tee changelog_entry
+        if: startsWith(github.ref_name, 'v') && github.ref_type == 'tag'
+        shell: bash
+
+      - name: Read changelog entry from file
+        id: changelog_entry
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./changelog_entry
+        if: startsWith(github.ref_name, 'v') && github.ref_type == 'tag'
+
+      - name: Release Server/GUI
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/ReWare GUI${{ env.EXE }}
+          tag: ${{ github.ref_name }}
+          asset_name: ReWare-GUI-${{ steps.extract_version.outputs.version }}-${{ matrix.platform }}${{ env.EXE }}
+          body: ${{ steps.changelog_entry.outputs.content }}
+        if: startsWith(github.ref_name, 'v') && github.ref_type == 'tag'
+
+      - name: Release Client
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/ReWare Client${{ env.EXE }}
+          tag: ${{ github.ref_name }}
+          asset_name: ReWare-Client-${{ steps.extract_version.outputs.version }}-${{ matrix.platform }}${{ env.EXE }}
+          body: ${{ steps.changelog_entry.outputs.content }}
+        if: startsWith(github.ref_name, 'v') && github.ref_type == 'tag'

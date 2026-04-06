@@ -6,13 +6,13 @@ PYINSTALLER := pyinstaller
 # Directories
 ASSETS_DIR := assets
 SRC_DIR := src
-# (or ReWare.ico for Windows)
-ICON := $(ASSETS_DIR)/ReWare.png
+ICON := $(ASSETS_DIR)/ReWare.ico
 DIST_DIR := dist
 BUILD_DIR := build
 
 # Check if the icon exists, otherwise PyInstaller will throw an error
-ICON_FLAG = $(shell if [ -f $(ICON) ]; then echo "--icon=$(ICON)"; fi)
+# Only apply icon on Windows
+ICON_FLAG = $(shell if [ -f "$(ICON)" ] && [ "$(OS)" = "Windows_NT" ]; then echo "--icon=$(ICON)"; fi)
 
 .PHONY: all install build build-server build-client clean
 
