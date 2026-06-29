@@ -103,11 +103,15 @@ These constants in `client.py` can be tuned:
 ## To Do
 
 - [ ] Hear the sound coming from the remote PC
-- [ ] See the mouse controlled by the person using the remote PC
+- [ ] See the mouse movements from the remote user
 - [ ] Use encrypted communication (TLS)
-- [ ] Control FPS and JPEG quality from the GUI
-- [ ] Scroll horizontally (which the Python module `mouse` does not allow)
-- [ ] Integrate compatibility for all keyboard types (not just QWERTY)
+- [ ] Configure FPS and JPEG quality from the GUI
+- [ ] Scroll horizontally (not supported by the Python `mouse` module)
+- [ ] Support all keyboard layouts (not just QWERTY)
+- [ ] Connect to multiple PCs at the same time
+
+> [!TIP]
+While designed as a simple educational Remote Desktop Controller rather than a full RAT, its core architecture could easily be adapted into one by adding features like persistent reconnection loops for LAN broadcast discovery with appropriate delays, and auto-startup mechanisms. (This tool doesn't use a [reverse-connection](https://en.wikipedia.org/wiki/Reverse_connection) model.)
 
 ## Support
 
