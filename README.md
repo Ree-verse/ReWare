@@ -111,7 +111,7 @@ These constants in `client.py` can be tuned:
 - [ ] Connect to multiple PCs at the same time
 
 > [!TIP]
-While designed as a simple educational Remote Desktop Controller rather than a full RAT, its core architecture could easily be adapted into one by adding features like persistent reconnection loops for LAN broadcast discovery with appropriate delays, and auto-startup mechanisms. (This tool doesn't use a [reverse-connection](https://en.wikipedia.org/wiki/Reverse_connection) model. Instead, the controlled host (acting as the client) initiates a direct TCP connection to the controller (acting as the server).)
+While designed as a simple educational Remote Desktop Controller rather than a full RAT, its core architecture could easily be adapted into one by adding features like persistent reconnection loops for LAN broadcast discovery with appropriate delays, and auto-startup mechanisms. (This tool doesn't use a [reverse-connection](https://en.wikipedia.org/wiki/Reverse_connection) model. Instead, the controlled host (acting as the client) initiates a direct TCP connection to the controller (acting as the server.)
 
 ## Support
 
