@@ -30,7 +30,7 @@ build: build-server build-client
 # Build the Server/GUI (Windowed, no console popup)
 build-server:
 	@echo "Building Server/GUI..."
-	$(PYINSTALLER) --noconfirm --onefile --windowed $(ICON_FLAG) --name "ReWare GUI" $(SRC_DIR)/main.py
+	$(PYINSTALLER) --noconfirm --onefile --windowed $(ICON_FLAG) --name "ReWare GUI" --hidden-import="PIL._tkinter_finder" $(SRC_DIR)/main.py
 
 # Build the Client (Console app)
 build-client:
