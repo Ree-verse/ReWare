@@ -65,7 +65,6 @@ class Server:
             await server.serve_forever()
 
     # Client handler
-
     async def _handle_client(self, ws) -> None:
         client_id = None
 

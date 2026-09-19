@@ -119,7 +119,6 @@ class Client:
             )
 
     # Data reception and management
-
     async def _handle_messages(self) -> None:
         async for raw in self._ws:
             if isinstance(raw, bytes):
