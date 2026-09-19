@@ -17,15 +17,14 @@ import io
 import json
 import os
 import socket
-
 from typing import Any
 
 import keyboard
 import mouse
-from mss.screenshot import ScreenShot
 import websockets
 from colorama import Fore, Style
 from mss import mss
+from mss.screenshot import ScreenShot
 from PIL import Image
 
 if os.name == "nt":

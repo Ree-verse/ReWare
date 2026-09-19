@@ -23,6 +23,7 @@ from PIL import Image, ImageTk
 
 from server import Server
 
+
 # Theme (Catppuccin Mocha)
 class Theme:
     BG = "#1e1e2e"
