@@ -35,11 +35,11 @@ https://github.com/user-attachments/assets/d8fa3e88-f8b8-493a-bfee-434bb0f76327
 
 The system has three components:
 
-1. **Controller GUI (`main.py`)** - Runs on *your* machine. Opens a Tkinter dashboard that shows connected PCs and displays a live view of their screens. Your keyboard and mouse inputs on the viewer are captured and forwarded.
+1. **Controller GUI (`main.py`)**: Runs on *your* machine. Opens a Tkinter dashboard that shows connected PCs and displays a live view of their screens. Your keyboard and mouse inputs on the viewer are captured and forwarded.
 
-2. **WebSocket Server (`server.py`)** - Embedded in the GUI. Listens for incoming client connections, relays screen frames to the viewer, and sends input events back to the active client.
+2. **WebSocket Server (`server.py`)**: Embedded in the GUI. Listens for incoming client connections, relays screen frames to the viewer, and sends input events back to the active client.
 
-3. **Client (`client.py`)** - Runs on each *remote* PC you want to control. Connects to the server, continuously captures the screen as JPEG frames, and replays any incoming keyboard/mouse events locally.
+3. **Client (`client.py`)**: Runs on each *remote* PC you want to control. Connects to the server, continuously captures the screen as JPEG frames, and replays any incoming keyboard/mouse events locally.
 
 - **Screen capture** uses [mss](https://github.com/BoboTiG/python-mss) to grab frames, which are compressed to JPEG and sent over the WebSocket as binary messages.
 - **Input replay** uses the [keyboard](https://github.com/boppreh/keyboard) and [mouse](https://github.com/boppreh/mouse) libraries to physically reproduce key presses, mouse movements, clicks, and scrolls on the remote machine.
@@ -112,6 +112,10 @@ These constants in `client.py` can be tuned:
 
 > [!TIP]
 While designed as a simple educational Remote Desktop Controller rather than a full RAT, its core architecture could easily be adapted into one by adding features like persistent reconnection loops for LAN broadcast discovery with appropriate delays, and auto-startup mechanisms. (This tool doesn't use a [reverse-connection](https://en.wikipedia.org/wiki/Reverse_connection) model. Instead, the controlled host (acting as the client) initiates a direct TCP connection to the controller (acting as the server.)
+
+## Code note
+
+Certain functions and variables are intentionally only used once, for readability purposes.
 
 ## Support
 
